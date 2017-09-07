@@ -1,0 +1,66 @@
+<?php
+
+/*
+
+Create and teach flat file databases including reading and writing files, 
+form validation, user defined functions, additional PHP syntax. Create 
+flat file database in class.
+Notes:
+
+- assignment
+- review form-post pattern
+- review http headers (get/post)
+- flat file db functions
+- date function (more in week 7)
+- functionize (user defined)
+- put it all together
+
+*/
+
+if(!empty($_POST)) {
+	// Open a file
+	$handle = fopen("mydata.txt","a+");
+	
+	// Gonna look in $_POST['email']
+	$name = $_POST['name'];
+	$email = $_POST['email'];
+	$phone = $_POST['phone'];
+	$message = $_POST['message'];
+	
+	// Add some validation logic
+	if(empty($name))
+		die("Please go back and enter a name");
+	
+	if(!filter_var($email,FILTER_VALIDATE_EMAIL))
+		die("Please enter a valid email address");
+	
+	if(empty($phone))
+		die("Please enter a phone number.");
+	
+	// Ways to create our $content string:
+	// $content = $_POST['name']."|".$_POST['email']."|".$_POST['phone']."|".$_POST['message']."\n"; 
+	// $content = implode("|",$_POST);
+	$content = "$name|$email|$phone|$message";
+	
+	// Write that to a file
+	fwrite($handle,$content);
+	
+	// To be good little coders
+	fclose($handle);
+	
+	echo "Thanks for submitting your code";
+} else {
+	
+?>
+	<p><br>Here is a form:<br></p>
+	<div>
+		<form method="POST" action="">
+			Name: <input type="text" name="name" /><br>
+			Email: <input type="text" name="email" /><br>
+			Phone: <input type="text" name="phone" /><br>
+			Message: <br> <textarea name="message" /></textarea>
+			<br><input type="submit" />
+		</form>
+	</div>
+	
+<?php } ?>

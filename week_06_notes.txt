@@ -1,0 +1,56 @@
+- hash, mcrypt
+- php my admin
+- mysql basics
+- includes
+
+// CODE 
+<?php
+/*
+// Let's connect to a database!
+// Connect returns a connection/link that we use to communicate with the database
+$link = mysqli_connect("localhost","ryan.rodd","Circus123!","student-database");
+
+// The query to run
+$query = "SELECT * FROM ryan_friends";
+
+// Send the query to the database
+$result = mysqli_query($link,$query);
+
+// Get first row of data returned
+$data1   = mysqli_fetch_array($result, MYSQLI_ASSOC);
+// Get NEXT row of data returned
+$data2   = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+print_r($data1);
+print_r($data2);
+*/
+
+// Input of this function will be a query, the output will 
+// be a 2D array with the results
+function runQuery($query_text) {
+	// Define a return array
+	$ret  = array();
+	// Connect to database and run query
+	$link = mysqli_connect("localhost","ryan.rodd","Circus123!","student-database");
+	$result = mysqli_query($link,$query_text);
+	// Looping through results and creating our output array
+	if($result) {
+		while($data = @mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+			$ret[] = $data;
+		}
+	}
+	// Return output array
+	return $ret;
+}
+
+// $mydata = runQuery("SELECT firstname,lastname FROM ryan_friends WHERE id < 4;");
+// print_r($mydata);
+
+echo "your activity has been logged!";
+
+$ip   =  $_SERVER['REMOTE_ADDR'];
+$date =  date("Y-m-d H:i:s");
+$query= "INSERT INTO page_counter (ip_address,created) VALUES ('$ip','$date');";
+
+//echo $query;
+runQuery($query);

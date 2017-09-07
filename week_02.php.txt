@@ -1,0 +1,116 @@
+<?php
+
+	$x = 2;
+	$x++;
+	
+	// Lets try an if-statement (flow control)
+	if($x > 2) {
+		echo "It's true!";
+		// echo "<br>The value of \$x is " . $x;
+	} elseif {
+
+	} else { 
+		echo "It's false :'( ";
+	}
+	echo "<br>The value of \$x is " . $x;
+
+
+	// A for loop in PHP
+	for($i=0; $i<=9; $i++) {
+		echo "$i <br>";
+	}
+	
+	echo "<br>Here is a php array: <br>";
+	
+	// Defining a simple values only array in PHP
+	$heroes = [
+		'batman',
+		'antman',
+		'wolverine',
+		'wonder woman',
+		'iron man'
+	];
+	
+	// Defining an explicity keyed=>value array in PHP
+	$heroes = [
+		'key'   =>'value',
+		'bruce' =>'batman',
+		'scott' =>'antman',
+		'logan' =>'wolverine',
+		'dianna'=>'wonder woman',
+		'tony'  =>'iron man'
+	];
+	
+	// Accessing an individual array element
+	// echo $array[$key];
+	// echo $heroes['bruce'];
+	
+	
+	// A for loop to access our array in PHP
+	for($i=0; $i<=sizeof($heroes); $i++){
+		echo $heroes[$i] ."<br>";
+	}
+	
+	// A PHP foreach loop to access our array (much cleaner)
+	foreach($heroes as $name=>$hero) {
+		echo $hero . " is ".$name."<br>";
+	}
+	
+	phpinfo();
+	
+?>
+
+<?php
+	echo "Welcome to Week 2<br>";
+	
+	// Lets use $_GET
+	// echo print_r($_GET);
+	$students = $_GET;
+	
+	foreach($students as $desk=>$name) {
+		echo "$name is at $desk<br>";
+	}
+	
+	echo "<br>To learn the secret of life, the universe and everything, set the right key:<br>";
+	
+	if($_GET['key'] == "whatisthequestion") {
+		echo "42";
+	} else {
+		echo "wrong. but what is the question?";
+	}
+?>
+<!--
+<br>
+echo "hello"; // oops and this comment isn't hidden either
+-->
+<p><br>Here is a form:<br></p>
+<div>
+	<form method="GET" action="week02_processform.php">
+		Name: <input type="text" name="name" /><br>
+		Email: <input type="text" name="email" /><br>
+		Phone: <input type="text" name="phone" /><br>
+		Message: <br> <textarea name="message"></textarea>
+		<br><input type="submit" />
+	</form>
+</div>
+
+--------------------- Process the form:
+
+<?php
+
+echo "Here is the stuff you submitted in the form: <br>";
+print_r($_POST);
+
+if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {	
+	$to = "ryanrodd@gmail.com";
+	$subject = "Here's an email!";
+	$message = $_POST['name'] . " sent you a message:\n\n" . $_POST['message'];
+	
+	mail($to,$subject,$message);
+} else {
+	echo "Please enter a valid an email address";
+}
+
+?>
+
+

@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<title>Login to my site!</title>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+	</head>
+	<body style="margin:2em;">
+		<div>
+			<b>Login</b> below to gain access to ALL my personal info
+			<br /><br />
+		</div>
+		<div>
+			<form id="loginForm" onsubmit="return false;">
+				Email Address: <input type="text" name="emailInput" id="emailInput" /><br />
+				Password: <input type="password" name="passwordInput" id="passwordInput" /><br />
+				<button type="submit" value="Save" id="loginButton">Login</button>
+				<p id="resultMessage"></p>
+			</form>
+		</div>
+		<!-- don't worry about this link -->
+		<a href="week_04_register.html">Register</a> first for an account
+		
+		<script>
+			$("#loginButton").click(function(){
+				if($("emailInput").val()=="") {
+					return alert("Please enter an email address");
+				}
+				
+				var loginUrl = "http://circuslabs.net/~ryan.rodd/php-summer-17/week_09_process.php";
+				
+				$.post(loginUrl,$("#loginForm").serialize(),function(json){
+					if(json.success) {
+						$("#resultMessage").html("Login succeeded!").css({"color":"green"});
+					} else {
+						$("#resultMessage").html("Bad username or password").css({"color":"red"});
+					}
+				},"json");
+				
+			});
+			
+			$( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
+			    alert(jqxhr.responseText); 
+			});
+		</script>
+	</body>
+</html>

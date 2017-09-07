@@ -1,0 +1,16 @@
+-- review:
+hashes and cryptography
+sql verbs
+run statements
+-- week 7 notes:
+select distinct
+where and or not
+order by
+group by
+min max count average sum
+in between
+join/left join
+-- date functions
+date()
+time()
+strtotime()

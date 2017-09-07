@@ -1,0 +1,154 @@
+SERVER SIDE INCLUDES 
+SIMPLE ROUTER EXAMPLE
+AND 
+NAMESPACES HOLY FUCK!
+
+----- week 8 ------
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	</head>
+	<body>
+		<h1 id="myName"></h1>
+		<p id="loginTitle"><br>Login here:<br></p>
+		<div id="loginContainer">
+			<form onsubmit="return false;">
+				username: <input type="text" name="username" id="username" /><br>
+				password: <input type="password" name="password" id="password" /><br>
+				<br />
+				<input type="submit" id="loginButton" />
+			</form>
+			<div>Or <a href="week04.php?register">register</a></div>
+			<div id="friendsOutput">
+				Loading...
+			</div>
+			
+		</div>
+		
+		<script>
+		$(document).ready(function(){
+			
+			// Add login functionality to login button
+			$("#loginButton").click(function(){
+				
+				$("#loginTitle").html("Logging in, please wait...");
+				$("#loginContainer").fadeTo("fast","0.2");
+				
+				var username=$("#username").val();
+				var password=$("#password").val();
+				var postData={"username":username,"password":password};
+				
+				$.post("week08_login.php",postData,function(result){
+					//alert(result.loggedin);
+
+					if(result.loggedin) {
+						$("body").css({"background":"green"});
+						$("#myName").html("hello "+result.firstname+" "+result.lastname);
+						setTimeout(function(){
+								location.reload();
+						},5000);
+							
+					} else {
+						alert("bad username or password, please try again");
+						$("#loginTitle").html("<br>Login here:");
+						$("#loginContainer").fadeTo("fast","1");
+					}
+				
+				},"json");
+			});
+			
+			// Get information from a data source: week08_data.php
+			$.get("week08_data.php",function(json){
+				$("#friendsOutput").empty();
+				$.each(json,function(i,row){
+					//alert(row.firstname);
+					$("#friendsOutput").append(row.firstname+" ");
+					$("#friendsOutput").append(row.lastname+" ");
+					$("#friendsOutput").append(row.email+" ");
+					$("#friendsOutput").append(row.phone+" <br>");
+				});
+			},"json").error(function(j){
+				alert(j.responseText);
+			});
+		});			
+		</script>
+	</body>
+</html>
+
+---- WEEK 9 STUFF ----
+
+<html>
+	<head>
+		<title>Lets upload a file!</title>
+	</head>
+	<body>
+		<form action="week09_process.php" method="post" enctype="multipart/form-data">
+			
+		    Select file to upload:<br>
+		    <input type="file" name="fileUpload">
+		    <br><br>
+		    
+		    Title: <br>
+		    <input type="text" name="title" />
+		    
+		    <br><br>		    
+		    <input type="submit" value="Upload File">
+		    
+		</form>
+	</body>
+</html>
+<?php
+$filenames = scandir(__DIR__ . "/uploads");
+
+foreach($filenames as $file) {
+	if(is_file(__DIR__ . "/uploads/".$file)) {
+		echo "<img src='uploads/".$file."'/> <br>";
+	}
+}
+?>
+
+
+<?php
+
+echo "THANKS FOR UPLOADING A FILE OMG OMG OMG.<pre>";
+
+print_r($_FILES);
+
+if(!empty($_FILES)) {
+	$source      = $_FILES['fileUpload']['tmp_name'];
+	$unique      = date("ymdhis").rand(0,10000);
+	$destination = __DIR__ ."/uploads/". $unique ."_". $_FILES['fileUpload']['name'];
+	
+	if($_FILES['fileUpload']['type'] == "image/jpeg") 
+	{
+		move_uploaded_file($source, $destination);	
+		// LETS CREATE A THUMBNAIL!
+		// File is now in $destination
+		
+		$handler = imagecreatefromjpeg($destination);
+		list($width,$height) = [imagesx($handler),imagesy($handler)];
+		
+		$new_width = 200;
+		$new_height= round($height * ($new_width/$width));
+		
+		// Create new blank resource for our thumbnail
+		$new_handler = imagecreatetruecolor($new_width,$new_height);
+		
+		// Resize from original to new
+		// imagefilter($handler, IMG_FILTER_COLORIZE, 0, 255, 0);
+		imagecopyresampled($new_handler, $handler, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+		
+		imagejpeg($new_handler, __DIR__ ."/uploads/thumb_". $unique ."_". $_FILES['fileUpload']['name']);
+	
+	} else { 
+		unlink($source);
+		echo "NOT AN IMAGE... GEEEEZ";
+	}
+	
+	
+}
+
+?>
